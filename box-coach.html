@@ -172,29 +172,43 @@
 
     <script>
         // --- 1. DATENBANK (Gewichtet) ---
-        const masterList = [
-            { text: "Jab", tags: ["offense"], weight: 15 }, 
-            { text: "Doppel Jab", tags: ["offense"], weight: 10 },
-            { text: "Führhand", tags: ["offense"], weight: 8 },
-            { text: "Cross", tags: ["offense"], weight: 5 },
-            { text: "Jab, Cross", tags: ["offense"], weight: 12 },
-            { text: "Eins, Zwei", tags: ["offense"], weight: 12 },
-            { text: "Jab, Körper", tags: ["offense"], weight: 6 },
-            { text: "Jab, Raus", tags: ["defense", "move"], weight: 8 },
-            { text: "Block, Cross", tags: ["defense"], weight: 6 },
-            { text: "Meiden, Jab", tags: ["defense"], weight: 6 },
-            { text: "Jab, Jab, Cross", tags: ["offense"], weight: 6 },
-            { text: "Eins, Zwei, Haken", tags: ["offense"], weight: 5 },
-            { text: "Eins, Zwei, Rollen", tags: ["defense"], weight: 5 },
-            { text: "Jab, Cross, Schritt zurück", tags: ["move", "defense"], weight: 5 },
-            { text: "Block, Block, Uppercut", tags: ["defense"], weight: 4 },
-            { text: "Eins, Zwei, Haken, Cross", tags: ["offense"], weight: 3 },
-            { text: "Jab, Cross, Meiden, Cross", tags: ["defense"], weight: 3 },
-            { text: "1, 2, Körper, Kopf", tags: ["offense"], weight: 3 },
-            { text: "1, 2, Haken, Cross, Uppercut", tags: ["offense"], weight: 2 },
-            { text: "Jab, Cross, Slip, Cross, Haken", tags: ["defense"], weight: 1 },
-            { text: "1, 2, Rollen, 2, 3, 2", tags: ["offense", "defense"], weight: 1 }
-        ];
+const masterList = [
+    // --- LÄNGE 1: Die Basis (Frequenz & Distanz) ---
+    { text: "Jab", tags: ["offense"], weight: 15 },
+    { text: "Doppel Jab", tags: ["offense"], weight: 10 },
+    { text: "Führhand", tags: ["offense"], weight: 8 }, 
+    { text: "Jab tief", tags: ["offense"], weight: 5 }, // Niveau-Wechsel
+
+    // --- LÄNGE 2: Standard Verbindungen (Setup -> Payoff) ---
+    { text: "Jab, Cross", tags: ["offense"], weight: 12 },
+    { text: "Eins, Zwei", tags: ["offense"], weight: 12 },
+    { text: "Jab, Leberhaken", tags: ["offense"], weight: 6 }, // Präziser als "Körper"
+    { text: "Jab, Raus", tags: ["move", "defense"], weight: 8 }, // Hit & Run
+    { text: "Block, Cross", tags: ["defense"], weight: 6 }, // Klassischer Konter
+    { text: "Meiden, Cross", tags: ["defense"], weight: 6 }, // Slip & Counter
+    { text: "1, 2, Schritt zurück", tags: ["move"], weight: 5 }, // Distanz wahren
+
+    // --- LÄNGE 3: Der Flow (Links-Rechts-Links Prinzip) ---
+    { text: "Jab, Jab, Cross", tags: ["offense"], weight: 7 }, // Rhythmus brechen
+    { text: "Eins, Zwei, Haken", tags: ["offense"], weight: 8 }, // Der Klassiker
+    { text: "Eins, Zwei, Rollen", tags: ["defense"], weight: 6 }, // Angriff & Sicherung
+    { text: "Jab, Cross, Meiden", tags: ["defense"], weight: 5 },
+    { text: "Side-Step, Jab, Cross", tags: ["move", "offense"], weight: 4 }, // Winkel schaffen
+    { text: "Uppercut, Haken, Cross", tags: ["offense"], weight: 3 }, // Infight Wühlen
+    { text: "Jab, Antäuschen, Jab", tags: ["offense"], weight: 4 }, // Taktik
+
+    // --- LÄNGE 4: Kombinationen mit Abschluss ---
+    { text: "Eins, Zwei, Haken, Cross", tags: ["offense"], weight: 4 }, // Maximale Power
+    { text: "Jab, Cross, Rollen, Cross", tags: ["defense"], weight: 4 }, // Konter nach Defense
+    { text: "1, 2, Leber, Kopf", tags: ["offense"], weight: 3 }, // Ebenenwechsel
+    { text: "Jab, Cross, Schritt raus, Cross", tags: ["move", "offense"], weight: 3 }, // Neu positionieren
+
+    // --- LÄNGE 5+: "Schuhputzer" (Burnout Serien) ---
+    { text: "1, 2, Haken, Cross, Uppercut", tags: ["offense"], weight: 2 }, 
+    { text: "Jab, Cross, Meiden, Cross, Haken", tags: ["defense"], weight: 2 },
+    { text: "Eins, Zwei, Eins, Zwei, Raus", tags: ["offense", "move"], weight: 2 }, // Druck & Flucht
+    { text: "Block, Block, Uppercut, Haken, Cross", tags: ["defense", "offense"], weight: 1 } // Aus der Deckung explodieren
+];
 
         // --- GLOBAL VARS ---
         let activeWeightedPool = [];
