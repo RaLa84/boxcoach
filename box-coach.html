@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Box Coach Pro (Realistisch)</title>
+    <title>Box Coach Pro (Ultimate)</title>
     <style>
         :root {
             --bg-color: #121212;
@@ -11,7 +11,8 @@
             --work-color: #00e676;
             --rest-color: #ff1744;
             --ui-bg: #1e1e1e;
-            --input-bg: #333;
+            --input-bg: #2c2c2c;
+            --shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
         body {
@@ -27,13 +28,10 @@
             padding: 10px;
             box-sizing: border-box;
             transition: background-color 0.4s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .container {
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-        }
+        .container { width: 100%; max-width: 450px; text-align: center; }
 
         /* --- SETTINGS PANEL --- */
         .settings-grid {
@@ -44,23 +42,16 @@
             background: var(--ui-bg);
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow);
+            transition: opacity 0.3s;
         }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
+        .input-group { display: flex; flex-direction: column; text-align: left; }
         .full-width { grid-column: span 3; }
 
         label { 
-            font-size: 0.75rem; 
-            color: #aaa; 
-            margin-bottom: 6px; 
-            font-weight: 600; 
-            text-transform: uppercase;
+            font-size: 0.75rem; color: #aaa; margin-bottom: 6px; 
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
         }
         
         input, select {
@@ -73,104 +64,63 @@
             box-sizing: border-box;
             font-size: 1.1rem;
             outline: none;
+            transition: border-color 0.2s;
         }
 
         input:focus, select:focus { border-color: var(--work-color); }
 
-        /* Slider Design */
+        /* Slider */
         input[type="range"] {
-            -webkit-appearance: none;
-            height: 6px;
-            background: #555;
-            border-radius: 5px;
-            border: none;
-            padding: 0;
+            -webkit-appearance: none; height: 6px; background: #555;
+            border-radius: 5px; border: none; padding: 0;
         }
         input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--work-color);
-            cursor: pointer;
-            border: 2px solid #fff;
+            -webkit-appearance: none; width: 24px; height: 24px;
+            border-radius: 50%; background: var(--work-color);
+            cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
+        .slider-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .slider-val { color: var(--work-color); font-weight: bold; font-size: 0.9rem;}
 
         /* --- DISPLAYS --- */
         #status-display {
-            font-size: 1.2rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 10px;
-            color: #888;
+            font-size: 1.2rem; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; margin-top: 10px; color: #888;
         }
 
         #timer-display {
-            font-size: 5.5rem;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-            line-height: 1;
-            margin: 10px 0 20px 0;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            font-size: 5.5rem; font-weight: 700; font-variant-numeric: tabular-nums;
+            line-height: 1; margin: 10px 0 20px 0;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
         #combo-display {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #ffeb3b;
-            min-height: 90px; /* Fixiert Platz damit nichts springt */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            line-height: 1.3;
-            padding: 0 10px;
+            font-size: 2rem; font-weight: 600; color: #ffeb3b;
+            min-height: 100px; display: flex; align-items: center; justify-content: center;
+            text-align: center; line-height: 1.2; padding: 0 10px;
         }
 
         /* --- BUTTONS --- */
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
-        }
+        .btn-container { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
 
         button {
-            padding: 16px 32px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: transform 0.1s, filter 0.2s;
-            width: 100%;
-            max-width: 160px;
+            padding: 18px 32px; font-size: 1.1rem; border: none; border-radius: 50px;
+            cursor: pointer; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            transition: transform 0.1s, filter 0.2s; width: 100%; max-width: 160px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        button:active { transform: scale(0.95); }
+        button:active { transform: scale(0.96); }
 
         #btn-start { background-color: var(--work-color); color: #000; }
         #btn-stop { background-color: var(--rest-color); color: #fff; display: none; }
         #btn-reset { background-color: #333; color: #ccc; }
 
-        /* Active Modes */
-        body.mode-work { background-color: #05200e; } /* Sehr dunkles Grün */
-        body.mode-rest { background-color: #200505; } /* Sehr dunkles Rot */
-        
+        /* Modes */
+        body.mode-work { background-color: #05200e; }
+        body.mode-rest { background-color: #200505; }
         body.mode-work #timer-display { color: var(--work-color); }
         body.mode-rest #timer-display { color: var(--rest-color); }
-
-        /* Helper for hidden settings */
         .hidden { display: none !important; }
     </style>
 </head>
@@ -180,15 +130,15 @@
         <div id="settings-area" class="settings-grid">
             <div class="input-group">
                 <label>Runden</label>
-                <input type="number" id="rounds" value="3">
+                <input type="number" id="rounds" onchange="saveSettings()" value="3">
             </div>
             <div class="input-group">
                 <label>Zeit (Min)</label>
-                <input type="number" id="work-min" value="3">
+                <input type="number" id="work-min" onchange="saveSettings()" value="3">
             </div>
             <div class="input-group">
                 <label>Pause (Sek)</label>
-                <input type="number" id="rest-sec" value="60">
+                <input type="number" id="rest-sec" onchange="saveSettings()" value="60">
             </div>
             
             <div class="input-group full-width">
@@ -196,12 +146,12 @@
                     <label>Max. Kombo Länge</label>
                     <span id="range-val" class="slider-val">Bis 3 Aktionen</span>
                 </div>
-                <input type="range" id="combo-length" min="1" max="6" value="3" oninput="updateRangeLabel(this.value)">
+                <input type="range" id="combo-length" min="1" max="6" value="3" oninput="updateRangeLabel(this.value)" onchange="saveSettings()">
             </div>
 
             <div class="input-group full-width">
                 <label>Trainings-Fokus</label>
-                <select id="content-mode">
+                <select id="content-mode" onchange="saveSettings()">
                     <option value="all">Realistischer Mix (Alles)</option>
                     <option value="offense">Nur Angriff (Conditioning)</option>
                     <option value="defense">Technisch (Angriff + Defense)</option>
@@ -221,73 +171,151 @@
     </div>
 
     <script>
-        // --- 1. DIE DATENBANK MIT GEWICHTUNG (Stufe 2) ---
-        // weight: Je höher die Zahl, desto öfter kommt die Kombo dran.
+        // --- 1. DATENBANK (Gewichtet) ---
         const masterList = [
-            // --- LENGTH 1 (Sehr häufig) ---
             { text: "Jab", tags: ["offense"], weight: 15 }, 
             { text: "Doppel Jab", tags: ["offense"], weight: 10 },
             { text: "Führhand", tags: ["offense"], weight: 8 },
             { text: "Cross", tags: ["offense"], weight: 5 },
-
-            // --- LENGTH 2 (Häufig) ---
             { text: "Jab, Cross", tags: ["offense"], weight: 12 },
             { text: "Eins, Zwei", tags: ["offense"], weight: 12 },
             { text: "Jab, Körper", tags: ["offense"], weight: 6 },
             { text: "Jab, Raus", tags: ["defense", "move"], weight: 8 },
             { text: "Block, Cross", tags: ["defense"], weight: 6 },
             { text: "Meiden, Jab", tags: ["defense"], weight: 6 },
-            
-            // --- LENGTH 3 (Mittel) ---
             { text: "Jab, Jab, Cross", tags: ["offense"], weight: 6 },
             { text: "Eins, Zwei, Haken", tags: ["offense"], weight: 5 },
             { text: "Eins, Zwei, Rollen", tags: ["defense"], weight: 5 },
             { text: "Jab, Cross, Schritt zurück", tags: ["move", "defense"], weight: 5 },
             { text: "Block, Block, Uppercut", tags: ["defense"], weight: 4 },
-
-            // --- LENGTH 4 (Selten - Finisher) ---
             { text: "Eins, Zwei, Haken, Cross", tags: ["offense"], weight: 3 },
             { text: "Jab, Cross, Meiden, Cross", tags: ["defense"], weight: 3 },
             { text: "1, 2, Körper, Kopf", tags: ["offense"], weight: 3 },
-            
-            // --- LENGTH 5+ (Sehr selten - Highlights) ---
             { text: "1, 2, Haken, Cross, Uppercut", tags: ["offense"], weight: 2 },
             { text: "Jab, Cross, Slip, Cross, Haken", tags: ["defense"], weight: 1 },
             { text: "1, 2, Rollen, 2, 3, 2", tags: ["offense", "defense"], weight: 1 }
         ];
 
         // --- GLOBAL VARS ---
-        let activeWeightedPool = []; // Hier kommen die Lose rein
+        let activeWeightedPool = [];
         let timerInterval, comboInterval;
         let totalSeconds = 0;
         let isResting = false;
         let currentRound = 1, roundsTotal = 3;
         let synth = window.speechSynthesis;
+        let wakeLock = null;
+        let audioCtx = null; // Für den Sound
 
-        // --- HELPER ---
+        // --- INIT: LOAD SETTINGS ---
+        window.onload = function() {
+            loadSettings();
+        };
+
+        // --- SOUND ENGINE (Web Audio API) ---
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTone(type) {
+            if (!audioCtx) initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'start') {
+                // Hoher Gong
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(100, now + 1.5);
+                gain.gain.setValueAtTime(1, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+                osc.start(now);
+                osc.stop(now + 1.5);
+            } else if (type === 'end') {
+                // Tieferer Gong
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 1.5);
+                gain.gain.setValueAtTime(1, now);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
+                osc.start(now);
+                osc.stop(now + 1.5);
+            }
+        }
+
+        // --- WAKE LOCK (Bildschirm wachhalten) ---
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Screen Wake Lock active');
+                }
+            } catch (err) {
+                console.log(`${err.name}, ${err.message}`);
+            }
+        }
+
+        async function releaseWakeLock() {
+            if (wakeLock !== null) {
+                await wakeLock.release();
+                wakeLock = null;
+            }
+        }
+
+        // --- PERSISTENCE (Speichern) ---
+        function saveSettings() {
+            const settings = {
+                rounds: document.getElementById('rounds').value,
+                workMin: document.getElementById('work-min').value,
+                restSec: document.getElementById('rest-sec').value,
+                comboLength: document.getElementById('combo-length').value,
+                contentMode: document.getElementById('content-mode').value
+            };
+            localStorage.setItem('boxCoachSettings', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('boxCoachSettings');
+            if (saved) {
+                const s = JSON.parse(saved);
+                document.getElementById('rounds').value = s.rounds;
+                document.getElementById('work-min').value = s.workMin;
+                document.getElementById('rest-sec').value = s.restSec;
+                document.getElementById('combo-length').value = s.comboLength;
+                document.getElementById('content-mode').value = s.contentMode;
+                updateRangeLabel(s.comboLength);
+            }
+        }
+
+        // --- LOGIC ---
         function updateRangeLabel(val) {
             document.getElementById('range-val').innerText = `Bis ${val} Aktionen`;
         }
 
-        // --- MAIN LOGIC ---
         function startTraining() {
-            // Inputs lesen
+            initAudio(); // Audio aktivieren
+            requestWakeLock(); // Bildschirm anlassen
+
             const workMin = parseInt(document.getElementById('work-min').value);
             roundsTotal = parseInt(document.getElementById('rounds').value);
             const maxLen = parseInt(document.getElementById('combo-length').value);
             const contentMode = document.getElementById('content-mode').value;
 
-            // 1. FILTERN (Nach Länge & Typ)
+            // Filter
             const filteredList = masterList.filter(item => {
                 const len = item.text.split(',').length;
-                const lenOk = len <= maxLen;
-                
                 let contentOk = false;
                 if (contentMode === 'all') contentOk = true;
                 else if (contentMode === 'offense') contentOk = item.tags.includes('offense');
                 else if (contentMode === 'defense') contentOk = item.tags.some(t => ['defense', 'move'].includes(t));
-                
-                return lenOk && contentOk;
+                return (len <= maxLen) && contentOk;
             });
 
             if (filteredList.length === 0) {
@@ -295,15 +323,14 @@
                 return;
             }
 
-            // 2. GEWICHTEN (Pool füllen)
+            // Weighted Pool
             activeWeightedPool = [];
             filteredList.forEach(item => {
                 const w = item.weight || 1; 
-                // Das Item wird so oft in den Array gepusht, wie das Gewicht ist
                 for(let i=0; i < w; i++) activeWeightedPool.push(item);
             });
 
-            // UI Wechsel
+            // UI
             document.getElementById('settings-area').classList.add('hidden');
             document.getElementById('btn-start').style.display = 'none';
             document.getElementById('btn-stop').style.display = 'inline-block';
@@ -326,7 +353,10 @@
             document.getElementById('status-display').innerText = `RUNDE ${currentRound} / ${roundsTotal}`;
             document.body.className = "mode-work";
             
-            speak("Boxen!");
+            playTone('start'); // GONG!
+            // Kleiner Delay mit der Sprache, damit es nicht über den Gong spricht
+            setTimeout(() => speak("Boxen!"), 1000);
+
             timerInterval = setInterval(tick, 1000);
             startComboCaller();
         }
@@ -340,7 +370,9 @@
             document.body.className = "mode-rest";
             document.getElementById('combo-display').innerText = "Tief atmen";
 
-            speak("Pause.");
+            playTone('end'); // GONG!
+            setTimeout(() => speak("Pause."), 1000);
+
             stopComboCaller();
             timerInterval = setInterval(tick, 1000);
         }
@@ -364,6 +396,7 @@
         function stopTraining() {
             clearInterval(timerInterval);
             stopComboCaller();
+            releaseWakeLock(); // Akku sparen erlauben
             document.getElementById('btn-start').style.display = 'inline-block';
             document.getElementById('btn-stop').style.display = 'none';
             document.getElementById('btn-reset').style.display = 'inline-block';
@@ -384,6 +417,7 @@
 
         function finishTraining() {
             stopTraining();
+            playTone('end');
             document.getElementById('status-display').innerText = "FERTIG";
             speak("Training beendet. Gute Arbeit.");
             document.body.className = "";
@@ -398,17 +432,13 @@
             document.getElementById('timer-display').innerText = `${m}:${sec}`;
         }
 
-        // --- COMBO CALLER (REKURSIV & ZUFALL) ---
         function startComboCaller() {
             (function loop() {
-                // Zufallszeit zwischen 2.5s und 5.5s
                 const randTime = Math.floor(Math.random() * 3000) + 2500; 
-                
                 comboInterval = setTimeout(() => {
-                    // Prüfen ob wir noch im Box-Modus sind
                     if (!isResting && document.getElementById('btn-stop').style.display !== 'none') {
                         callRandomCombo();
-                        loop(); // Nächste Runde
+                        loop();
                     }
                 }, randTime);
             })();
@@ -418,18 +448,14 @@
 
         function callRandomCombo() {
             if (activeWeightedPool.length === 0) return;
-            
-            // Zufall aus dem gewichteten Pool
             const idx = Math.floor(Math.random() * activeWeightedPool.length);
             const combo = activeWeightedPool[idx];
-            
             document.getElementById('combo-display').innerText = combo.text;
             speak(combo.text);
         }
 
         function speak(text) {
             if ('speechSynthesis' in window) {
-                // Vorherige Ansage abbrechen damit sie sich nicht stapeln
                 synth.cancel(); 
                 const u = new SpeechSynthesisUtterance(text);
                 u.lang = 'de-DE';
