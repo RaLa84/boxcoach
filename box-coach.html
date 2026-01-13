@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Box Coach Pro (Ultimate)</title>
+    <title>Box Coach Pro (Complete)</title>
     <style>
         :root {
             --bg-color: #121212;
@@ -22,16 +22,45 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             margin: 0;
             padding: 10px;
             box-sizing: border-box;
-            transition: background-color 0.4s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .container { width: 100%; max-width: 450px; text-align: center; }
+        /* --- HEADER & NAV --- */
+        .top-bar {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+        
+        .logo { font-weight: 900; letter-spacing: 1px; font-style: italic; color: var(--work-color); }
+        
+        .btn-icon {
+            background: var(--ui-bg);
+            color: #fff;
+            border: 1px solid #444;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .container { width: 100%; max-width: 450px; text-align: center; position: relative; }
+
+        /* --- VIEWS (Home vs Glossary) --- */
+        .view-section {
+            transition: opacity 0.3s ease;
+        }
+        .hidden { display: none !important; opacity: 0; }
 
         /* --- SETTINGS PANEL --- */
         .settings-grid {
@@ -43,7 +72,6 @@
             padding: 20px;
             border-radius: 16px;
             box-shadow: var(--shadow);
-            transition: opacity 0.3s;
         }
 
         .input-group { display: flex; flex-direction: column; text-align: left; }
@@ -51,25 +79,15 @@
 
         label { 
             font-size: 0.75rem; color: #aaa; margin-bottom: 6px; 
-            font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            font-weight: 600; text-transform: uppercase;
         }
         
         input, select {
-            background: var(--input-bg);
-            border: 1px solid #444;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 1.1rem;
-            outline: none;
-            transition: border-color 0.2s;
+            background: var(--input-bg); border: 1px solid #444; color: white;
+            padding: 12px; border-radius: 8px; width: 100%;
+            font-size: 1.1rem; outline: none; box-sizing: border-box;
         }
 
-        input:focus, select:focus { border-color: var(--work-color); }
-
-        /* Slider */
         input[type="range"] {
             -webkit-appearance: none; height: 6px; background: #555;
             border-radius: 5px; border: none; padding: 0;
@@ -77,7 +95,7 @@
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none; width: 24px; height: 24px;
             border-radius: 50%; background: var(--work-color);
-            cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            cursor: pointer; border: 2px solid #fff;
         }
 
         .slider-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -104,113 +122,201 @@
         /* --- BUTTONS --- */
         .btn-container { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
 
-        button {
+        button.action-btn {
             padding: 18px 32px; font-size: 1.1rem; border: none; border-radius: 50px;
             cursor: pointer; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            transition: transform 0.1s, filter 0.2s; width: 100%; max-width: 160px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            width: 100%; max-width: 160px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        button:active { transform: scale(0.96); }
+        button.action-btn:active { transform: scale(0.96); }
 
         #btn-start { background-color: var(--work-color); color: #000; }
         #btn-stop { background-color: var(--rest-color); color: #fff; display: none; }
         #btn-reset { background-color: #333; color: #ccc; }
+
+        /* --- GLOSSARY STYLES --- */
+        #glossary-view {
+            text-align: left;
+            background: var(--ui-bg);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .glossary-category { margin-bottom: 25px; }
+        .glossary-category h3 { 
+            color: var(--work-color); border-bottom: 1px solid #444; 
+            padding-bottom: 5px; margin-bottom: 10px; 
+        }
+        
+        .glossary-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .term { font-weight: bold; color: #fff; }
+        .desc { color: #ccc; }
 
         /* Modes */
         body.mode-work { background-color: #05200e; }
         body.mode-rest { background-color: #200505; }
         body.mode-work #timer-display { color: var(--work-color); }
         body.mode-rest #timer-display { color: var(--rest-color); }
-        .hidden { display: none !important; }
+
     </style>
 </head>
 <body>
 
+    <div class="top-bar">
+        <div class="logo">BOX COACH PRO</div>
+        <button class="btn-icon" onclick="toggleView()" id="nav-btn">?</button>
+    </div>
+
     <div class="container">
-        <div id="settings-area" class="settings-grid">
-            <div class="input-group">
-                <label>Runden</label>
-                <input type="number" id="rounds" onchange="saveSettings()" value="3">
+        
+        <div id="home-view" class="view-section">
+            <div id="settings-area" class="settings-grid">
+                <div class="input-group">
+                    <label>Runden</label>
+                    <input type="number" id="rounds" onchange="saveSettings()" value="3">
+                </div>
+                <div class="input-group">
+                    <label>Zeit (Min)</label>
+                    <input type="number" id="work-min" onchange="saveSettings()" value="3">
+                </div>
+                <div class="input-group">
+                    <label>Pause (Sek)</label>
+                    <input type="number" id="rest-sec" onchange="saveSettings()" value="60">
+                </div>
+                
+                <div class="input-group full-width">
+                    <div class="slider-header">
+                        <label>Max. Kombo Länge</label>
+                        <span id="range-val" class="slider-val">Bis 3 Aktionen</span>
+                    </div>
+                    <input type="range" id="combo-length" min="1" max="6" value="3" oninput="updateRangeLabel(this.value)" onchange="saveSettings()">
+                </div>
+
+                <div class="input-group full-width">
+                    <label>Trainings-Fokus</label>
+                    <select id="content-mode" onchange="saveSettings()">
+                        <option value="all">Realistischer Mix (Alles)</option>
+                        <option value="offense">Nur Angriff (Offensive)</option>
+                        <option value="defense">Technisch (Inkl. Defense)</option>
+                    </select>
+                </div>
             </div>
-            <div class="input-group">
-                <label>Zeit (Min)</label>
-                <input type="number" id="work-min" onchange="saveSettings()" value="3">
+
+            <div id="status-display">BEREIT</div>
+            <div id="timer-display">00:00</div>
+            <div id="combo-display">-</div>
+
+            <div class="btn-container">
+                <button id="btn-start" class="action-btn" onclick="startTraining()">Start</button>
+                <button id="btn-stop" class="action-btn" onclick="stopTraining()">Stop</button>
+                <button id="btn-reset" class="action-btn" onclick="resetTraining()">Reset</button>
             </div>
-            <div class="input-group">
-                <label>Pause (Sek)</label>
-                <input type="number" id="rest-sec" onchange="saveSettings()" value="60">
+        </div>
+
+        <div id="glossary-view" class="view-section hidden">
+            <h2 style="margin-top:0">Trainings-Glossar</h2>
+            <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px;">Hier findest du die Erklärungen zu den Begriffen, die der Trainer verwendet.</p>
+
+            <div class="glossary-category">
+                <h3>🥊 Offensive (Schläge)</h3>
+                <div class="glossary-item">
+                    <div class="term">Jab / 1</div>
+                    <div class="desc">Die Führhand (Gerade). Deine wichtigste Waffe.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="term">Cross / 2</div>
+                    <div class="desc">Die Schlaghand (Power-Gerade). Drehe die Hüfte ein!</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="term">Haken / 3 / 4</div>
+                    <div class="desc">Seitwärtshaken zum Kopf. (3=Links, 4=Rechts).</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="term">Uppercut</div>
+                    <div class="desc">Aufwärtshaken von unten nach oben.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="term">Leber</div>
+                    <div class="desc">Linker Haken zum Körper (unter die Rippen).</div>
+                </div>
+            </div>
+
+            <div class="glossary-category">
+                <h3>🛡️ Defensive (Schutz)</h3>
+                <div class="glossary-item">
+                    <div class="term">Blocken</div>
+                    <div class="desc">Handschuhe fest an die Stirn/Schläfe pressen.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="term">Meiden (Slip)</div>
+                    <div class="desc">Kopf kurz zur Seite neigen, um einer Geraden auszuweichen.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="term">Rollen</div>
+                    <div class="desc">Unter einem Haken "durchtauchen" (U-Form).</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="term">Schritt raus</div>
+                    <div class="desc">Schneller Schritt nach hinten, raus aus der Reichweite.</div>
+                </div>
             </div>
             
-            <div class="input-group full-width">
-                <div class="slider-header">
-                    <label>Max. Kombo Länge</label>
-                    <span id="range-val" class="slider-val">Bis 3 Aktionen</span>
-                </div>
-                <input type="range" id="combo-length" min="1" max="6" value="3" oninput="updateRangeLabel(this.value)" onchange="saveSettings()">
-            </div>
-
-            <div class="input-group full-width">
-                <label>Trainings-Fokus</label>
-                <select id="content-mode" onchange="saveSettings()">
-                    <option value="all">Realistischer Mix (Alles)</option>
-                    <option value="offense">Nur Angriff (Conditioning)</option>
-                    <option value="defense">Technisch (Angriff + Defense)</option>
-                </select>
+            <div style="margin-top: 30px">
+                <button class="action-btn" style="background:#444; width:100%" onclick="toggleView()">Zurück zum Training</button>
             </div>
         </div>
 
-        <div id="status-display">BEREIT</div>
-        <div id="timer-display">00:00</div>
-        <div id="combo-display">-</div>
-
-        <div class="btn-container">
-            <button id="btn-start" onclick="startTraining()">Start</button>
-            <button id="btn-stop" onclick="stopTraining()">Stop</button>
-            <button id="btn-reset" onclick="resetTraining()">Reset</button>
-        </div>
     </div>
 
     <script>
-        // --- 1. DATENBANK (Gewichtet) ---
-const masterList = [
-    // --- LÄNGE 1: Die Basis (Frequenz & Distanz) ---
-    { text: "Jab", tags: ["offense"], weight: 15 },
-    { text: "Doppel Jab", tags: ["offense"], weight: 10 },
-    { text: "Führhand", tags: ["offense"], weight: 8 }, 
-    { text: "Jab tief", tags: ["offense"], weight: 5 }, // Niveau-Wechsel
+        // --- 1. DATENBANK (Optimiert) ---
+        const masterList = [
+            // LÄNGE 1
+            { text: "Jab", tags: ["offense"], weight: 15 },
+            { text: "Doppel Jab", tags: ["offense"], weight: 10 },
+            { text: "Führhand", tags: ["offense"], weight: 8 }, 
+            { text: "Jab tief", tags: ["offense"], weight: 5 }, 
 
-    // --- LÄNGE 2: Standard Verbindungen (Setup -> Payoff) ---
-    { text: "Jab, Cross", tags: ["offense"], weight: 12 },
-    { text: "Eins, Zwei", tags: ["offense"], weight: 12 },
-    { text: "Jab, Leberhaken", tags: ["offense"], weight: 6 }, // Präziser als "Körper"
-    { text: "Jab, Raus", tags: ["move", "defense"], weight: 8 }, // Hit & Run
-    { text: "Block, Cross", tags: ["defense"], weight: 6 }, // Klassischer Konter
-    { text: "Meiden, Cross", tags: ["defense"], weight: 6 }, // Slip & Counter
-    { text: "1, 2, Schritt zurück", tags: ["move"], weight: 5 }, // Distanz wahren
+            // LÄNGE 2
+            { text: "Jab, Cross", tags: ["offense"], weight: 12 },
+            { text: "Eins, Zwei", tags: ["offense"], weight: 12 },
+            { text: "Jab, Leberhaken", tags: ["offense"], weight: 6 }, 
+            { text: "Jab, Raus", tags: ["move", "defense"], weight: 8 }, 
+            { text: "Block, Cross", tags: ["defense"], weight: 6 }, 
+            { text: "Meiden, Cross", tags: ["defense"], weight: 6 }, 
+            { text: "1, 2, Schritt zurück", tags: ["move"], weight: 5 }, 
 
-    // --- LÄNGE 3: Der Flow (Links-Rechts-Links Prinzip) ---
-    { text: "Jab, Jab, Cross", tags: ["offense"], weight: 7 }, // Rhythmus brechen
-    { text: "Eins, Zwei, Haken", tags: ["offense"], weight: 8 }, // Der Klassiker
-    { text: "Eins, Zwei, Rollen", tags: ["defense"], weight: 6 }, // Angriff & Sicherung
-    { text: "Jab, Cross, Meiden", tags: ["defense"], weight: 5 },
-    { text: "Side-Step, Jab, Cross", tags: ["move", "offense"], weight: 4 }, // Winkel schaffen
-    { text: "Uppercut, Haken, Cross", tags: ["offense"], weight: 3 }, // Infight Wühlen
-    { text: "Jab, Antäuschen, Jab", tags: ["offense"], weight: 4 }, // Taktik
+            // LÄNGE 3
+            { text: "Jab, Jab, Cross", tags: ["offense"], weight: 7 }, 
+            { text: "Eins, Zwei, Haken", tags: ["offense"], weight: 8 }, 
+            { text: "Eins, Zwei, Rollen", tags: ["defense"], weight: 6 }, 
+            { text: "Jab, Cross, Meiden", tags: ["defense"], weight: 5 },
+            { text: "Side-Step, Jab, Cross", tags: ["move", "offense"], weight: 4 }, 
+            { text: "Uppercut, Haken, Cross", tags: ["offense"], weight: 3 }, 
+            { text: "Jab, Antäuschen, Jab", tags: ["offense"], weight: 4 }, 
 
-    // --- LÄNGE 4: Kombinationen mit Abschluss ---
-    { text: "Eins, Zwei, Haken, Cross", tags: ["offense"], weight: 4 }, // Maximale Power
-    { text: "Jab, Cross, Rollen, Cross", tags: ["defense"], weight: 4 }, // Konter nach Defense
-    { text: "1, 2, Leber, Kopf", tags: ["offense"], weight: 3 }, // Ebenenwechsel
-    { text: "Jab, Cross, Schritt raus, Cross", tags: ["move", "offense"], weight: 3 }, // Neu positionieren
+            // LÄNGE 4
+            { text: "Eins, Zwei, Haken, Cross", tags: ["offense"], weight: 4 }, 
+            { text: "Jab, Cross, Rollen, Cross", tags: ["defense"], weight: 4 }, 
+            { text: "1, 2, Leber, Kopf", tags: ["offense"], weight: 3 }, 
+            { text: "Jab, Cross, Schritt raus, Cross", tags: ["move", "offense"], weight: 3 }, 
 
-    // --- LÄNGE 5+: "Schuhputzer" (Burnout Serien) ---
-    { text: "1, 2, Haken, Cross, Uppercut", tags: ["offense"], weight: 2 }, 
-    { text: "Jab, Cross, Meiden, Cross, Haken", tags: ["defense"], weight: 2 },
-    { text: "Eins, Zwei, Eins, Zwei, Raus", tags: ["offense", "move"], weight: 2 }, // Druck & Flucht
-    { text: "Block, Block, Uppercut, Haken, Cross", tags: ["defense", "offense"], weight: 1 } // Aus der Deckung explodieren
-];
+            // LÄNGE 5+
+            { text: "1, 2, Haken, Cross, Uppercut", tags: ["offense"], weight: 2 }, 
+            { text: "Jab, Cross, Meiden, Cross, Haken", tags: ["defense"], weight: 2 },
+            { text: "Eins, Zwei, Eins, Zwei, Raus", tags: ["offense", "move"], weight: 2 },
+            { text: "Block, Block, Uppercut, Haken, Cross", tags: ["defense", "offense"], weight: 1 }
+        ];
 
-        // --- GLOBAL VARS ---
+        // --- VARS ---
         let activeWeightedPool = [];
         let timerInterval, comboInterval;
         let totalSeconds = 0;
@@ -218,72 +324,71 @@ const masterList = [
         let currentRound = 1, roundsTotal = 3;
         let synth = window.speechSynthesis;
         let wakeLock = null;
-        let audioCtx = null; // Für den Sound
+        let audioCtx = null;
 
-        // --- INIT: LOAD SETTINGS ---
-        window.onload = function() {
-            loadSettings();
-        };
+        // --- INIT ---
+        window.onload = function() { loadSettings(); };
 
-        // --- SOUND ENGINE (Web Audio API) ---
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // --- NAVIGATION ---
+        function toggleView() {
+            const home = document.getElementById('home-view');
+            const gloss = document.getElementById('glossary-view');
+            const btn = document.getElementById('nav-btn');
+
+            if (home.classList.contains('hidden')) {
+                // Show Home
+                home.classList.remove('hidden');
+                gloss.classList.add('hidden');
+                btn.innerText = "?";
+            } else {
+                // Show Glossary
+                home.classList.add('hidden');
+                gloss.classList.remove('hidden');
+                btn.innerText = "X";
             }
+        }
+
+        // --- AUDIO ---
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
 
         function playTone(type) {
             if (!audioCtx) initAudio();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
             const now = audioCtx.currentTime;
 
             if (type === 'start') {
-                // Hoher Gong
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(400, now);
                 osc.frequency.exponentialRampToValueAtTime(100, now + 1.5);
                 gain.gain.setValueAtTime(1, now);
                 gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
-                osc.start(now);
-                osc.stop(now + 1.5);
-            } else if (type === 'end') {
-                // Tieferer Gong
+                osc.start(now); osc.stop(now + 1.5);
+            } else {
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(300, now);
                 osc.frequency.exponentialRampToValueAtTime(50, now + 1.5);
                 gain.gain.setValueAtTime(1, now);
                 gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.5);
-                osc.start(now);
-                osc.stop(now + 1.5);
+                osc.start(now); osc.stop(now + 1.5);
             }
         }
 
-        // --- WAKE LOCK (Bildschirm wachhalten) ---
+        // --- WAKE LOCK ---
         async function requestWakeLock() {
-            try {
-                if ('wakeLock' in navigator) {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Screen Wake Lock active');
-                }
-            } catch (err) {
-                console.log(`${err.name}, ${err.message}`);
-            }
+            try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } 
+            catch (err) { console.log(err); }
         }
-
         async function releaseWakeLock() {
-            if (wakeLock !== null) {
-                await wakeLock.release();
-                wakeLock = null;
-            }
+            if (wakeLock !== null) { await wakeLock.release(); wakeLock = null; }
         }
 
-        // --- PERSISTENCE (Speichern) ---
+        // --- SETTINGS ---
         function saveSettings() {
             const settings = {
                 rounds: document.getElementById('rounds').value,
@@ -308,21 +413,17 @@ const masterList = [
             }
         }
 
-        // --- LOGIC ---
         function updateRangeLabel(val) {
             document.getElementById('range-val').innerText = `Bis ${val} Aktionen`;
         }
 
+        // --- CORE LOGIC ---
         function startTraining() {
-            initAudio(); // Audio aktivieren
-            requestWakeLock(); // Bildschirm anlassen
-
-            const workMin = parseInt(document.getElementById('work-min').value);
-            roundsTotal = parseInt(document.getElementById('rounds').value);
+            initAudio(); requestWakeLock();
             const maxLen = parseInt(document.getElementById('combo-length').value);
             const contentMode = document.getElementById('content-mode').value;
+            roundsTotal = parseInt(document.getElementById('rounds').value);
 
-            // Filter
             const filteredList = masterList.filter(item => {
                 const len = item.text.split(',').length;
                 let contentOk = false;
@@ -332,27 +433,22 @@ const masterList = [
                 return (len <= maxLen) && contentOk;
             });
 
-            if (filteredList.length === 0) {
-                alert("Keine Kombos gefunden! Bitte Einstellungen prüfen.");
-                return;
-            }
+            if (filteredList.length === 0) { alert("Keine Kombos gefunden!"); return; }
 
-            // Weighted Pool
             activeWeightedPool = [];
             filteredList.forEach(item => {
                 const w = item.weight || 1; 
                 for(let i=0; i < w; i++) activeWeightedPool.push(item);
             });
 
-            // UI
             document.getElementById('settings-area').classList.add('hidden');
+            document.getElementById('nav-btn').style.display = 'none'; // Verstecke Hilfe während Training
             document.getElementById('btn-start').style.display = 'none';
             document.getElementById('btn-stop').style.display = 'inline-block';
             document.getElementById('btn-reset').style.display = 'none';
 
             if (totalSeconds <= 0) {
-                currentRound = 1;
-                startWorkPhase(workMin * 60);
+                currentRound = 1; startWorkPhase(parseInt(document.getElementById('work-min').value) * 60);
             } else {
                 timerInterval = setInterval(tick, 1000);
                 if (!isResting) startComboCaller();
@@ -360,60 +456,41 @@ const masterList = [
         }
 
         function startWorkPhase(duration) {
-            isResting = false;
-            totalSeconds = duration;
-            updateDisplay(totalSeconds);
-            
+            isResting = false; totalSeconds = duration; updateDisplay(totalSeconds);
             document.getElementById('status-display').innerText = `RUNDE ${currentRound} / ${roundsTotal}`;
             document.body.className = "mode-work";
-            
-            playTone('start'); // GONG!
-            // Kleiner Delay mit der Sprache, damit es nicht über den Gong spricht
-            setTimeout(() => speak("Boxen!"), 1000);
-
-            timerInterval = setInterval(tick, 1000);
-            startComboCaller();
+            playTone('start'); setTimeout(() => speak("Boxen!"), 1000);
+            timerInterval = setInterval(tick, 1000); startComboCaller();
         }
 
         function startRestPhase(duration) {
-            isResting = true;
-            totalSeconds = duration;
-            updateDisplay(totalSeconds);
-
+            isResting = true; totalSeconds = duration; updateDisplay(totalSeconds);
             document.getElementById('status-display').innerText = "PAUSE";
             document.body.className = "mode-rest";
             document.getElementById('combo-display').innerText = "Tief atmen";
-
-            playTone('end'); // GONG!
-            setTimeout(() => speak("Pause."), 1000);
-
-            stopComboCaller();
-            timerInterval = setInterval(tick, 1000);
+            playTone('end'); setTimeout(() => speak("Pause."), 1000);
+            stopComboCaller(); timerInterval = setInterval(tick, 1000);
         }
 
         function tick() {
-            totalSeconds--;
-            updateDisplay(totalSeconds);
-
+            totalSeconds--; updateDisplay(totalSeconds);
             if (totalSeconds <= 0) {
                 clearInterval(timerInterval);
                 if (!isResting) {
                     if (currentRound >= roundsTotal) finishTraining();
                     else startRestPhase(parseInt(document.getElementById('rest-sec').value));
                 } else {
-                    currentRound++;
-                    startWorkPhase(parseInt(document.getElementById('work-min').value) * 60);
+                    currentRound++; startWorkPhase(parseInt(document.getElementById('work-min').value) * 60);
                 }
             }
         }
 
         function stopTraining() {
-            clearInterval(timerInterval);
-            stopComboCaller();
-            releaseWakeLock(); // Akku sparen erlauben
+            clearInterval(timerInterval); stopComboCaller(); releaseWakeLock();
             document.getElementById('btn-start').style.display = 'inline-block';
             document.getElementById('btn-stop').style.display = 'none';
             document.getElementById('btn-reset').style.display = 'inline-block';
+            document.getElementById('nav-btn').style.display = 'flex'; // Hilfe wieder da
             document.getElementById('btn-start').innerText = "Weiter";
         }
 
@@ -425,19 +502,16 @@ const masterList = [
             document.getElementById('timer-display').innerText = "00:00";
             document.getElementById('combo-display').innerText = "-";
             document.body.className = "";
-            totalSeconds = 0;
-            currentRound = 1;
+            totalSeconds = 0; currentRound = 1;
         }
 
         function finishTraining() {
-            stopTraining();
-            playTone('end');
+            stopTraining(); playTone('end');
             document.getElementById('status-display').innerText = "FERTIG";
-            speak("Training beendet. Gute Arbeit.");
+            speak("Training beendet.");
             document.body.className = "";
             document.getElementById('settings-area').classList.remove('hidden');
-            totalSeconds = 0;
-            document.getElementById('btn-start').innerText = "Neuer Start";
+            totalSeconds = 0; document.getElementById('btn-start').innerText = "Neuer Start";
         }
 
         function updateDisplay(s) {
@@ -451,8 +525,7 @@ const masterList = [
                 const randTime = Math.floor(Math.random() * 3000) + 2500; 
                 comboInterval = setTimeout(() => {
                     if (!isResting && document.getElementById('btn-stop').style.display !== 'none') {
-                        callRandomCombo();
-                        loop();
+                        callRandomCombo(); loop();
                     }
                 }, randTime);
             })();
@@ -472,9 +545,7 @@ const masterList = [
             if ('speechSynthesis' in window) {
                 synth.cancel(); 
                 const u = new SpeechSynthesisUtterance(text);
-                u.lang = 'de-DE';
-                u.rate = 1.1; 
-                synth.speak(u);
+                u.lang = 'de-DE'; u.rate = 1.1; synth.speak(u);
             }
         }
     </script>
